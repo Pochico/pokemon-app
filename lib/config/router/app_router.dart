@@ -14,10 +14,10 @@ final appRouter = GoRouter(
     GoRoute(
         path: '/details/:pokemonName',
         pageBuilder: (context, state) {
-          final pokemonName = state.pathParameters['pokemonName']!;
+          final pokemonName = state.pathParameters['pokemonName'];
           return MaterialPage(
             key: state.pageKey,
-            child: DetailsScreen(pokemonName: pokemonName),
+            child: DetailsScreen(pokemonName: pokemonName!),
           );
         }),
   ],

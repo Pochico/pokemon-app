@@ -10,8 +10,8 @@ _$PokemonDetailImpl _$$PokemonDetailImplFromJson(Map<String, dynamic> json) =>
     _$PokemonDetailImpl(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
-      baseExperience: (json['base_experience'] as num?)?.toInt() ?? 0,
-      height: (json['height'] as num).toInt(),
+      baseExperience: (json['base_experience'] as num?)?.toDouble() ?? 0,
+      height: (json['height'] as num).toDouble(),
       weight: (json['weight'] as num).toInt(),
       isDefault: json['is_default'] as bool? ?? false,
       locationAreaEncounters: json['location_area_encounters'] as String? ?? '',
@@ -28,10 +28,12 @@ _$PokemonDetailImpl _$$PokemonDetailImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => PokemonType.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
-      sprites: json['sprites'] == null
-          ? PokemonSprites(
-              frontDefault: '', frontShiny: '', backDefault: '', backShiny: '')
-          : PokemonSprites.fromJson(json['sprites'] as Map<String, dynamic>),
+      sprites: PokemonSprites.fromJson(json['sprites'] as Map<String, dynamic>),
+      description: json['description'] as String? ?? '',
+      stats: (json['stats'] as List<dynamic>?)
+              ?.map((e) => PokemonStat.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
 
 Map<String, dynamic> _$$PokemonDetailImplToJson(_$PokemonDetailImpl instance) =>
@@ -48,6 +50,8 @@ Map<String, dynamic> _$$PokemonDetailImplToJson(_$PokemonDetailImpl instance) =>
       'moves': instance.moves,
       'types': instance.types,
       'sprites': instance.sprites,
+      'description': instance.description,
+      'stats': instance.stats,
     };
 
 _$PokemonAbilityImpl _$$PokemonAbilityImplFromJson(Map<String, dynamic> json) =>
@@ -193,6 +197,18 @@ Map<String, dynamic> _$$PokemonSpritesImplToJson(
       'back_shiny': instance.backShiny,
       'back_female': instance.backFemale,
       'back_shiny_female': instance.backShinyFemale,
+    };
+
+_$PokemonStatImpl _$$PokemonStatImplFromJson(Map<String, dynamic> json) =>
+    _$PokemonStatImpl(
+      baseStat: (json['base_stat'] as num).toInt(),
+      statName: _statNameFromJson(json['stat'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$PokemonStatImplToJson(_$PokemonStatImpl instance) =>
+    <String, dynamic>{
+      'base_stat': instance.baseStat,
+      'stat': _statNameToJson(instance.statName),
     };
 
 _$NamedAPIResourceImpl _$$NamedAPIResourceImplFromJson(

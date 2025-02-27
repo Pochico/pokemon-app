@@ -1,34 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:pokedex_flutter/infrastructure/models/pokemon_detail/pokemon_detail.dart';
-import 'package:pokedex_flutter/infrastructure/models/pokemon_simple/pokemon_simple.dart';
+import 'package:retrofit/retrofit.dart';
 
-class PokemonDataSource {
-  final Dio dio = Dio(BaseOptions(baseUrl: 'https://pokeapi.co/api/v2/'));
+part 'pokemon_datasource.g.dart';
 
-  Future<List<PokemonSimple>> getPokemonList() async {
-    try {
-      final response = await dio.get('pokemon?limit=20');
-      final pokemonList = response.data['results'] as List;
+@RestApi(baseUrl: 'https://pokeapi.co/api/v2/')
+abstract class PokemonDataSource {
+  factory PokemonDataSource(Dio dio, {String? baseUrl}) = _PokemonDataSource;
 
-      return pokemonList.map((pokemon) {
-        return PokemonSimple(
-          name: pokemon['name'],
-          image:
-              'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonList.indexOf(pokemon) + 1}.png',
-        );
-      }).toList();
-    } catch (e) {
-      throw Exception('Error al cargar Pokémon: $e');
-    }
-  }
+  @GET('pokemon?limit=20')
+  Future<HttpResponse<Map<String, dynamic>>> getPokemonList();
 
-  Future<PokemonDetail> getPokemonDetail(String name) async {
-    try {
-      final response = await dio.get('pokemon/$name');
-
-      return PokemonDetail.fromJson(response.data);
-    } catch (e) {
-      throw Exception('Error al cargar Pokémon: $e');
-    }
-  }
+  @GET('pokemon/{name}')
+  Future<HttpResponse<Map<String, dynamic>>> getPokemonDetail(
+      @Path("name") String name);
 }

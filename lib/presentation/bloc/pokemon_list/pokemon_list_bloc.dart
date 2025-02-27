@@ -1,12 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokedex_flutter/infrastructure/datasources/pokemon_datasource.dart';
+import 'package:pokedex_flutter/infrastructure/repositories/pokemon_repository.dart';
 import 'package:pokedex_flutter/presentation/bloc/pokemon_list/pokemon_list_event.dart';
 import 'package:pokedex_flutter/presentation/bloc/pokemon_list/pokemon_list_state.dart';
 
 class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
-  final PokemonDataSource pokemonDataSource;
+  final PokemonRepository pokemonRepository;
 
-  PokemonListBloc(this.pokemonDataSource) : super(PokemonListState.initial()) {
+  PokemonListBloc(this.pokemonRepository) : super(PokemonListState.initial()) {
     on<FetchPokemonList>(_onFetchPokemonList);
   }
 
@@ -15,7 +15,7 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
     emit(const PokemonListState.loading());
 
     try {
-      final pokemonList = await pokemonDataSource.getPokemonList();
+      final pokemonList = await pokemonRepository.getPokemonList();
       emit(PokemonListState.loaded(pokemonList));
     } catch (e) {
       emit(PokemonListState.error('Error al cargar Pokémon: $e'));

@@ -5,14 +5,14 @@ part 'pokemon_detail.g.dart';
 
 @freezed
 class PokemonDetail with _$PokemonDetail {
-  const PokemonDetail._(); // Añadir un constructor privado para permitir métodos adicionales
+  const PokemonDetail._();
 
   const factory PokemonDetail({
     required int id,
     required String name,
     @JsonKey(name: 'base_experience', defaultValue: 0)
-    required int baseExperience,
-    required int height,
+    required double baseExperience,
+    required double height,
     required int weight,
     @JsonKey(name: 'is_default', defaultValue: false) required bool isDefault,
     @JsonKey(name: 'location_area_encounters', defaultValue: '')
@@ -21,7 +21,10 @@ class PokemonDetail with _$PokemonDetail {
     @JsonKey(defaultValue: []) required List<PokemonAbility> abilities,
     @JsonKey(defaultValue: []) required List<PokemonMove> moves,
     @JsonKey(defaultValue: []) required List<PokemonType> types,
-    @JsonKey(defaultValue: []) required PokemonSprites sprites,
+    required PokemonSprites sprites,
+    // Nuevos campos:
+    @JsonKey(defaultValue: '') required String description,
+    @JsonKey(defaultValue: []) required List<PokemonStat> stats,
   }) = _PokemonDetail;
 
   factory PokemonDetail.fromJson(Map<String, dynamic> json) =>
@@ -150,6 +153,22 @@ class PokemonSprites with _$PokemonSprites {
     backShinyFemale: null,
   );
 }
+
+@freezed
+class PokemonStat with _$PokemonStat {
+  const factory PokemonStat({
+    @JsonKey(name: 'base_stat') required int baseStat,
+    @JsonKey(name: 'stat', fromJson: _statNameFromJson, toJson: _statNameToJson)
+    required String statName,
+  }) = _PokemonStat;
+
+  factory PokemonStat.fromJson(Map<String, dynamic> json) =>
+      _$PokemonStatFromJson(json);
+}
+
+String _statNameFromJson(Map<String, dynamic> json) => json['name'] as String;
+
+Map<String, dynamic> _statNameToJson(String statName) => {'name': statName};
 
 @freezed
 class NamedAPIResource with _$NamedAPIResource {
